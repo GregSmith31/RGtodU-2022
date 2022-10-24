@@ -5,6 +5,7 @@
     <string name="tv_home_welcome">Hello, got somethign to do?</string>
     <string name="btn_home_add_task">Add a task</string>
     <string name="btn_home_view_tasks">View tasks</string>
+    <string name="btn_home_view_a_task">View a task</string>
 
     <!-- create / edit tasks fragment -->
     <string name="tv_taskName">Task name</string>

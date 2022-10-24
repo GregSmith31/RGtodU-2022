@@ -3,6 +3,7 @@
   <component name="DesignSurface">
     <option name="filePathToZoomLevelMap">
       <map>
+        <entry key="..\:/git/CM3110-2022/RGtodU/app/src/main/res/layout/activity_main.xml" value="0.18931159420289856" />
         <entry key="..\:/git/CM3110-2022/RGtodU/app/src/main/res/layout/fragment_create_task.xml" value="0.33" />
         <entry key="..\:/git/CM3110-2022/RGtodU/app/src/main/res/layout/fragment_home.xml" value="0.23020833333333332" />
         <entry key="..\:/git/CM3110-2022/RGtodU/app/src/main/res/layout/fragment_task_list_recycler_view_activity.xml" value="0.23020833333333332" />

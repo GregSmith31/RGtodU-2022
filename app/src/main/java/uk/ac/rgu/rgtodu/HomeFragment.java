@@ -12,7 +12,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
-import android.widget.TextView;
 
 /**
  * Home {@link Fragment} for the app, acts as landing screen.
@@ -60,19 +59,40 @@ public class HomeFragment extends Fragment  implements View.OnClickListener {
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_home, container, false);
-
-
         return view;
     }
 
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
+        // Add click listener for the three buttons
+        // Add A Task Button
+        Button btnHome = view.findViewById(R.id.btn_home_add_task);
+        btnHome.setOnClickListener(this);
+
+        // View Tasks Button
+        Button btnViewTasks = view.findViewById(R.id.btn_home_view_tasks);
+        btnViewTasks.setOnClickListener(this);
+
+        // View Task Button - mainly for testing that page
+        Button btnViewTask = view.findViewById(R.id.btn_home_view_task);
+        btnViewTask.setOnClickListener(this);
 
     }
 
     @Override
     public void onClick(View v) {
-        // todo Add action listeners methods when doing navigation
+        // Get the NavController that will be used to navigate to other fragments
+        NavController navController = Navigation.findNavController(v);
+        if (v.getId() == R.id.btn_home_add_task) {
+            // Navigate using the action between the home fragment and create task fragment
+            navController.navigate(R.id.action_home_to_create_task);
+        } else if (v.getId() == R.id.btn_home_view_tasks) {
+            // Navigate using the action between the home fragment and view tasks fragment (this uses the one that includes a RecyclerView)
+            navController.navigate(R.id.action_home_to_task_recycler_view);
+        } else if (v.getId() == R.id.btn_home_view_task) {
+            // Navigate using the action between the home fragment and view a task fragment (fake task for testing)
+            navController.navigate(R.id.action_home_to_view_task);
+        }
     }
 }

@@ -10,7 +10,7 @@
         android:id="@+id/tv_viewTaskName"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginTop="204dp"
+        android:layout_marginTop="8dp"
         android:gravity="center_horizontal"
         android:textSize="24sp"
         android:textStyle="bold"
