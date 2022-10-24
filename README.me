@@ -1,0 +1,39 @@
+# RGtodU #
+This repository contains the Android Studio project for the RGtodU app, being developed during the lectures of CM3110 Mobile App Development during the 2022-23 academic session.
+
+## App Description ''
+
+** Promo Text ** - Helping you track and complete all your study related tasks
+
+** Description ** - The RGtodU app provides
+- A page to define a task, consisting of a name, objective to be completed, number of pomodoros to complete, priority, and deadline.
+- Save task locally on the device using Room SQL database, and sync to Firebase database hosted on the cloud using Volley API for HTTP connections
+- a page to view all you tasks in a list (RecyclerView)
+- a page to edit task
+- ability to delete / mark task as complete, removing from datastors
+- add to calendar app on ur phone
+- do a task using a pomotodo timer (using clock app)
+- navigate between pages using Android Navigation Component
+
+## App Design ##
+
+###Use cases###
+End user
+- Create Task
+- View a task
+- View all tasks
+- Edit a task
+- del a task
+- Add to Calendar using Calendar app service
+- Do a task using Clock app service
+- Sync data stores (depended on by create, view view all, edit, del tasks). Uses cloud Firebase service and Device RoomSQL database
+
+todo: insert images of task and user flows for above tasks
+
+### Pages ###
+** Home page **
+todo: insert screenshot of home page
+- First screen when opening app, implemented as a fragment, uses ConstraintLayout to position Views responsively for different device screens and orientattions.
+- Uses buttons to get input from user to select which page to load next
+
+** Create task **
