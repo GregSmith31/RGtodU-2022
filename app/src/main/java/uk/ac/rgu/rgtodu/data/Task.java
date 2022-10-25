@@ -12,7 +12,6 @@ import java.util.Date;
  */
 public class Task implements Parcelable {
 
-
     private int uid;
 
     // reference name for the task

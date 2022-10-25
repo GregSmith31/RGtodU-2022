@@ -6,6 +6,7 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -57,18 +58,72 @@ public class ViewTaskFragment extends Fragment {
         return fragment;
     }
 
+    // tag for logging
+    private static final String TAG = "ViewTaskFragment";
+
+    // key for storing the mTask during configuration changes
+    private static final String KEY_TASK = "mtask";
+
     // Field variable for storing the task being displayed
     private Task mTask;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        Log.d(TAG, "on create");
         if (getArguments() != null) {
             mParam1 = getArguments().getString(ARG_PARAM1);
             mParam2 = getArguments().getString(ARG_PARAM2);
         }
+
+        // we could check the if savedInstanceState has a task in it
+        // here (which we would for Activities) but for fragments
+        // that goes into the onViewCreated
+
+
         // initialise the data to be displayed in this UI
+        // it would be better programming to put this in onViewCreated
+        // given that we're now handing restoring state to avoid
+        // calling this if its not needed
         this.mTask = TaskRepository.getRepository(getContext()).getSyntheticTask();
+
+        Log.d(TAG, mTask.toString());
+    }
+
+    @Override
+    public void onStart() {
+        super.onStart();
+        Log.d(TAG, "on start");
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        Log.d(TAG, "on resume");
+    }
+
+    @Override
+    public void onPause() {
+        super.onPause();
+        Log.d(TAG, "on pause");
+    }
+
+    @Override
+    public void onStop() {
+        super.onStop();
+        Log.d(TAG, "on stop");
+    }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        Log.d(TAG, "on destroy");
+    }
+
+    @Override
+    public void onSaveInstanceState(@NonNull Bundle outState) {
+        super.onSaveInstanceState(outState);
+        outState.putParcelable(KEY_TASK, this.mTask);
     }
 
     @Override
@@ -81,8 +136,17 @@ public class ViewTaskFragment extends Fragment {
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        displayTask(view, mTask);
-
+        // check if savedInstanceState has a task in it to display
+        // i.e. recovering from a configuration change
+        // savedInstanceState will be null if its the first time this is running
+        if (savedInstanceState != null && savedInstanceState.containsKey(KEY_TASK)){
+            Task t = savedInstanceState.getParcelable(KEY_TASK);
+            // t shouldn't be null, but defensive programming just incase
+            if (t != null){
+                this.mTask = t;
+            }
+        }
+        displayTask(view, this.mTask);
     }
 
     /**
