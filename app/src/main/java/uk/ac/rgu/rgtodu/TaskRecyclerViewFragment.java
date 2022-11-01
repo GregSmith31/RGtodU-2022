@@ -12,6 +12,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Toast;
 
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
@@ -105,14 +106,10 @@ public class TaskRecyclerViewFragment extends Fragment {
                 new Response.Listener<String>() {
                     @Override
                     public void onResponse(String response) {
+                        List<Task> tasks = new ArrayList<Task>();
                         try {
-                            // a list of tasks to store them all in
-                            List<Task> tasks = new ArrayList<Task>();
-
-                            // Process the JSON response
                             JSONObject jsonObject = new JSONObject(response);
                             JSONObject tasksObject = jsonObject.getJSONObject("tasks");
-                            // for each task
                             for (Iterator<String> it = tasksObject.keys(); it.hasNext();){
                                 String taskId = it.next();
                                 // extract the key information
@@ -137,21 +134,27 @@ public class TaskRecyclerViewFragment extends Fragment {
                                 // set the status
                                 task.setStatus(TaskStatus.valueOf(status));
                                 // add that information to the tasks list
-                                tasks.add(task);
-                            }
-                            Log.d(TAG, "downloaded " + tasks.size() + " tasks");
-                            Log.d(TAG, tasks.toString());
+                                tasks.add(task);                            }
+                            // update the UI
                         } catch (JSONException e) {
                             e.printStackTrace();
+                            Toast.makeText(getContext(), R.string.download_error_json, Toast.LENGTH_LONG);
+
                         }
+                        Log.d(TAG, "downloaded " + tasks.size() + " tasks");
+                        Log.d(TAG, tasks.toString());
                     }
+
                 }, new Response.ErrorListener() {
-            @Override
-            public void onErrorResponse(VolleyError error) {
-                Log.d("tasks", error.getLocalizedMessage());
-            }
-        });
-        RequestQueue queue = Volley.newRequestQueue(getContext());
+                @Override
+                public void onErrorResponse(VolleyError error) {
+                    Log.d(TAG, "error with downloading ");
+                    // display message to the user
+                    Toast.makeText(getContext(), R.string.download_error, Toast.LENGTH_LONG);
+                }
+            });
+            RequestQueue queue = Volley.newRequestQueue(getContext());
         queue.add(stringRequest);
+
     }
 }

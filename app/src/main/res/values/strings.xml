@@ -42,4 +42,6 @@
 
     <!-- task list item view adapter -->
     <string name="tv_taskListPomodoros">%1$d pomodoros remaining</string>
+    <string name="download_error">Error with downloading tasks, sorry.</string>
+    <string name="download_error_json">Sorry, error processing the downloaded task list</string>
 </resources>
