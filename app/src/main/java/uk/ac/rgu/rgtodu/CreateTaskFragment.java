@@ -101,6 +101,8 @@ public class CreateTaskFragment extends Fragment implements View.OnClickListener
 
             // create the new task with those values
             Task task = new Task();
+            // bit of a hack for the id, but it should be unique
+            task.setId(System.currentTimeMillis()/1000);
             task.setName(taskName);
             task.setObjective(taskObjective);
             task.setPomodorosRemaining(pomodoros);
@@ -109,7 +111,7 @@ public class CreateTaskFragment extends Fragment implements View.OnClickListener
             // now set the proiority
             // for some unknown reason the app crashes when the radio buttons are clicked
             // so set all to medium for now
-            int taskPriorityButton = ((RadioGroup) getView().findViewById(R.id.rb_taskPriority)).getCheckedRadioButtonId();
+//            int taskPriorityButton = ((RadioGroup) getView().findViewById(R.id.rb_taskPriority)).getCheckedRadioButtonId();
             //        if (taskPriorityButton == R.id.rb_low)
             //            task.setPriority(TaskPriority.LOW);
             //        else if (taskPriorityButtonPriorityButton == R.id.rb_medium)
@@ -134,7 +136,7 @@ public class CreateTaskFragment extends Fragment implements View.OnClickListener
             TaskRepository repo = TaskRepository.getRepository(getContext());
             repo.storeTask(task);
 
-            // todo now go back to the home page
+            // Now go back to the home page
             NavController navController = Navigation.findNavController(view);
             navController.navigate(R.id.action_create_task_to_home);
         } else if (view.getId() == R.id.btn_canclel_new_task) {

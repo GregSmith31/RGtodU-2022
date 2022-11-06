@@ -5,10 +5,14 @@ import static java.security.AccessController.getContext;
 import android.content.Context;
 import android.util.Log;
 
+import androidx.annotation.Nullable;
+
+import com.android.volley.AuthFailureError;
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
+import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
 
@@ -17,8 +21,10 @@ import org.json.JSONObject;
 
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 import java.util.Random;
 
 /**
@@ -146,6 +152,40 @@ public class TaskRepository {
     public void storeTask(Task task){
         // todo store task
         Log.d(TAG, "Saving task " + task);
+        String url = "https://cm3110-2022-default-rtdb.firebaseio.com/dcorsar.json";
+
+        // convert Task to a JSON object for uploading
+        JSONObject js = new JSONObject();
+        try {
+            JSONObject taskObj = new JSONObject();
+            taskObj.put("name", task.getName());
+            taskObj.put("objective", task.getObjective());
+            taskObj.put("pomodorosRemaining", String.valueOf(task.getPomodorosRemaining()));
+            taskObj.put("deadline",String.valueOf(task.getDeadline().getTime()));
+            taskObj.put("priority",task.getPriority().getLabel());
+            taskObj.put("status",task.getStatus().getLabel());
+            JSONObject tasksObject = new JSONObject();
+            tasksObject.put(String.valueOf(task.getId()), taskObj);
+            js.put("tasks", tasksObject);
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+
+        JsonObjectRequest request = new JsonObjectRequest(Request.Method.POST, url, js,
+                new Response.Listener<JSONObject>() {
+            @Override
+            public void onResponse(JSONObject response) {
+                Log.d(TAG, "Successfully uploaded task ");
+            }
+        }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                Log.e(TAG, "Error uploaded task ");
+            }
+        });
+
+        RequestQueue queue = Volley.newRequestQueue(context);
+        queue.add(request);
     }
 
     /**
