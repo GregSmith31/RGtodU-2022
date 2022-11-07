@@ -7,6 +7,8 @@ import android.os.Bundle;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -31,6 +33,7 @@ import java.util.List;
 
 import uk.ac.rgu.rgtodu.data.Task;
 import uk.ac.rgu.rgtodu.data.TaskPriority;
+import uk.ac.rgu.rgtodu.data.TaskRepository;
 import uk.ac.rgu.rgtodu.data.TaskStatus;
 
 /**
@@ -92,7 +95,23 @@ public class TaskRecyclerViewFragment extends Fragment {
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        donwloadAllTasks();
+
+        // get some sample tasks
+        TaskRepository repo = TaskRepository.getRepository(getContext());
+        List<Task> tasks = repo.getSyntheticTasks(1000);
+
+        // get the RecycylerView on the UI
+        RecyclerView rv = view.findViewById(R.id.rv_taskRecyclerView);
+
+        // create a new Adapter for the RecyclerView
+        RecyclerView.Adapter adapter = new TaskRecyclerViewAdapter(getContext(), tasks);
+        // set the recycler view's adapter
+        rv.setAdapter(adapter);
+        // setup the layout manager on the recycler view
+        rv.setLayoutManager(new LinearLayoutManager(getContext()));
+
+        // commenting out for now
+//        donwloadAllTasks();
     }
 
     /**

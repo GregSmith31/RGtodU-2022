@@ -42,6 +42,17 @@
         app:layout_constraintTop_toTopOf="@+id/btn_home_add_task" />
 
     <Button
+        android:id="@+id/btn_home_vew_tasks_list"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="16dp"
+        android:text="@string/btn_home_view_tasks_list"
+        app:layout_constraintBottom_toTopOf="@+id/btn_home_view_task"
+        app:layout_constraintEnd_toEndOf="@+id/btn_home_view_task"
+        app:layout_constraintStart_toStartOf="@+id/btn_home_view_task" />
+
+
+    <Button
         android:id="@+id/btn_home_view_task"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"

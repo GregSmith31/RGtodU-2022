@@ -94,15 +94,18 @@ public class TaskRepository {
      * @param number The number of Tasks to return
      * @return
      */
-    private List<Task> getSyntheticTasks(int number){
+    public List<Task> getSyntheticTasks(int number){
         List<Task> tasks = new ArrayList<>(number);
         for (int i = 0; i < number; i++){
             Task t = getSyntheticTask();
-
+            t.setName(String.format("Task %s", i));
             tasks.add(t);
         }
         return tasks;
     }
+
+
+
 
     /**
      * Returns a {@link Task} with randomly generated info.
