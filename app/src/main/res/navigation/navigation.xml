@@ -19,6 +19,9 @@
         <action
             android:id="@+id/action_home_to_view_task"
             app:destination="@id/viewTaskFragment" />
+        <action
+            android:id="@+id/action_home_to_listview_tasks"
+            app:destination="@id/taskListViewFragment" />
     </fragment>
     <fragment
         android:id="@+id/createTaskFragment"
@@ -43,4 +46,9 @@
         android:name="uk.ac.rgu.rgtodu.ViewTaskFragment"
         android:label="fragment_view_task"
         tools:layout="@layout/fragment_view_task" />
+    <fragment
+        android:id="@+id/taskListViewFragment"
+        android:name="uk.ac.rgu.rgtodu.TaskListViewFragment"
+        android:label="fragment_task_list_view"
+        tools:layout="@layout/fragment_task_list_view" />
 </navigation>

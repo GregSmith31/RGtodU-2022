@@ -7,8 +7,9 @@
         <entry key="..\:/git/CM3110-2022/RGtodU/app/src/main/res/layout/fragment_create_task.xml" value="0.33" />
         <entry key="..\:/git/CM3110-2022/RGtodU/app/src/main/res/layout/fragment_home.xml" value="0.23020833333333332" />
         <entry key="..\:/git/CM3110-2022/RGtodU/app/src/main/res/layout/fragment_task_list_recycler_view_activity.xml" value="0.23020833333333332" />
+        <entry key="..\:/git/CM3110-2022/RGtodU/app/src/main/res/layout/fragment_task_list_view.xml" value="0.22" />
         <entry key="..\:/git/CM3110-2022/RGtodU/app/src/main/res/layout/fragment_view_task.xml" value="0.5" />
-        <entry key="..\:/git/CM3110-2022/RGtodU/app/src/main/res/layout/task_list_view_item.xml" value="0.23020833333333332" />
+        <entry key="..\:/git/CM3110-2022/RGtodU/app/src/main/res/layout/task_list_view_item.xml" value="0.5" />
       </map>
     </option>
   </component>
