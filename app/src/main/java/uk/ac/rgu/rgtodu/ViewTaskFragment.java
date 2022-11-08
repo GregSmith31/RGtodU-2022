@@ -29,35 +29,30 @@ import uk.ac.rgu.rgtodu.data.TaskStatus;
  */
 public class ViewTaskFragment extends Fragment implements AdapterView.OnClickListener{
 
-    // TODO: Rename parameter arguments, choose names that match
-    // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-    private static final String ARG_PARAM1 = "param1";
-    private static final String ARG_PARAM2 = "param2";
+    // fragment initialisation parameters - the task to display
+    public static final String ARG_TASK = "task";
+    public static final String ARG_TASK_NAME = "task_name";
 
-    // TODO: Rename and change types of parameters
-    private String mParam1;
-    private String mParam2;
-
-    public ViewTaskFragment() {
-        // Required empty public constructor
-    }
+    // Field variable for storing the task being displayed
+    private Task mTask;
 
     /**
      * Use this factory method to create a new instance of
      * this fragment using the provided parameters.
      *
-     * @param param1 Parameter 1.
-     * @param param2 Parameter 2.
+     * @param task The Task to be displayed on the Fragment
      * @return A new instance of fragment ViewTaskFragment.
      */
-    // TODO: Rename and change types and number of parameters
-    public static ViewTaskFragment newInstance(String param1, String param2) {
+    public static ViewTaskFragment newInstance(Task task) {
         ViewTaskFragment fragment = new ViewTaskFragment();
         Bundle args = new Bundle();
-        args.putString(ARG_PARAM1, param1);
-        args.putString(ARG_PARAM2, param2);
+        args.putParcelable(ARG_TASK, task);
         fragment.setArguments(args);
         return fragment;
+    }
+
+    public ViewTaskFragment() {
+        // Required empty public constructor
     }
 
     // tag for logging
@@ -66,30 +61,27 @@ public class ViewTaskFragment extends Fragment implements AdapterView.OnClickLis
     // key for storing the mTask during configuration changes
     private static final String KEY_TASK = "mtask";
 
-    // Field variable for storing the task being displayed
-    private Task mTask;
+
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         Log.d(TAG, "on create");
         if (getArguments() != null) {
-            mParam1 = getArguments().getString(ARG_PARAM1);
-            mParam2 = getArguments().getString(ARG_PARAM2);
+            Bundle args = getArguments();
+            this.mTask = args.getParcelable(ARG_TASK);
+            String task_name = args.getString(ARG_TASK_NAME);
         }
 
         // we could check the if savedInstanceState has a task in it
         // here (which we would for Activities) but for fragments
         // that goes into the onViewCreated
 
-
-        // initialise the data to be displayed in this UI
-        // it would be better programming to put this in onViewCreated
-        // given that we're now handing restoring state to avoid
-        // calling this if its not needed
-        this.mTask = TaskRepository.getRepository(getContext()).getSyntheticTask();
-
-        Log.d(TAG, mTask.toString());
+        // however, if the user has came from the home page
+        if (this.mTask == null){
+            // display a random task
+            this.mTask = TaskRepository.getRepository(getContext()).getSyntheticTask();
+        }
     }
 
     @Override
@@ -142,18 +134,21 @@ public class ViewTaskFragment extends Fragment implements AdapterView.OnClickLis
         Button btnDelete = view.findViewById(R.id.btn_viewDeleteTask);
         btnDelete.setOnClickListener(this);
 
-        // check if savedInstanceState has a task in it to display
-        // i.e. recovering from a configuration change
-        // savedInstanceState will be null if its the first time this is running
-        if (savedInstanceState != null && savedInstanceState.containsKey(KEY_TASK)){
+        // if mTask is not null, then it was passed as an argument
+        if (this.mTask != null){
+            displayTask(view, this.mTask);
+        } else if (savedInstanceState != null && savedInstanceState.containsKey(KEY_TASK)){
+            // check if savedInstanceState has a task in it to display
+            // i.e. recovering from a configuration change
+            // savedInstanceState will be null if its the first time this is running
             Task t = savedInstanceState.getParcelable(KEY_TASK);
             // t shouldn't be null, but defensive programming just incase
             if (t != null){
                 this.mTask = t;
+                displayTask(view, this.mTask);
             }
         }
-        displayTask(view, this.mTask);
-
+        // else we've not got a Task to display - how did that happen?
 
     }
 

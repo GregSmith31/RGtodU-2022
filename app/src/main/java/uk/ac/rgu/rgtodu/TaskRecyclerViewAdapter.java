@@ -1,6 +1,7 @@
 package uk.ac.rgu.rgtodu;
 
 import android.content.Context;
+import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -8,6 +9,7 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
+import androidx.navigation.Navigation;
 import androidx.recyclerview.widget.RecyclerView;
 
 import java.util.List;
@@ -107,6 +109,15 @@ public class TaskRecyclerViewAdapter extends RecyclerView.Adapter<TaskRecyclerVi
 
             // display a log message with the task's name
             Log.d(TAG, task.getName() );
+
+            // create a Bundle and navigate to the ViewTaskFragment
+            Bundle bundle = new Bundle();
+            // it shouldn't but just in case
+            if (task != null){
+                bundle.putParcelable(ViewTaskFragment.ARG_TASK, task);
+            }
+            // launch the action
+            Navigation.findNavController(v).navigate(R.id.action_task_recycler_view_to_view_task, bundle);
         }
     }
 }

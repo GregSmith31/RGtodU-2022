@@ -48,7 +48,16 @@
         android:id="@+id/viewTaskFragment"
         android:name="uk.ac.rgu.rgtodu.ViewTaskFragment"
         android:label="fragment_view_task"
-        tools:layout="@layout/fragment_view_task" />
+        tools:layout="@layout/fragment_view_task" >
+        <argument
+            android:name="task"
+            app:argType="uk.ac.rgu.rgtodu.data.Task"
+            app:nullable="true" />
+        <argument
+            android:name="task_name"
+            app:argType="string"
+            android:defaultValue="Dog of Wisdom" />
+    </fragment>
     <fragment
         android:id="@+id/taskListViewFragment"
         android:name="uk.ac.rgu.rgtodu.TaskListViewFragment"
