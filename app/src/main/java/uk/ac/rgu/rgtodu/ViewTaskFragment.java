@@ -10,6 +10,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.TextView;
 
@@ -26,7 +27,7 @@ import uk.ac.rgu.rgtodu.data.TaskStatus;
  * Use the {@link ViewTaskFragment#newInstance} factory method to
  * create an instance of this fragment.
  */
-public class ViewTaskFragment extends Fragment implements View.OnClickListener{
+public class ViewTaskFragment extends Fragment implements AdapterView.OnClickListener{
 
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER

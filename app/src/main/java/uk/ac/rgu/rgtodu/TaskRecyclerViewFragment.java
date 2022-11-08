@@ -1,7 +1,5 @@
 package uk.ac.rgu.rgtodu;
 
-import static java.security.AccessController.getContext;
-
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
@@ -33,7 +31,6 @@ import java.util.List;
 
 import uk.ac.rgu.rgtodu.data.Task;
 import uk.ac.rgu.rgtodu.data.TaskPriority;
-import uk.ac.rgu.rgtodu.data.TaskRepository;
 import uk.ac.rgu.rgtodu.data.TaskStatus;
 
 /**
@@ -44,6 +41,12 @@ import uk.ac.rgu.rgtodu.data.TaskStatus;
 public class TaskRecyclerViewFragment extends Fragment {
 
     private static final String TAG = "TaskRecyclerViewFrag";
+
+    // the list of tasks being displayed
+    List<Task> mTasks;
+    // the RecyclerView adapter being used to display them
+    RecyclerView.Adapter rvAdapter;
+
 
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
@@ -83,6 +86,10 @@ public class TaskRecyclerViewFragment extends Fragment {
             mParam1 = getArguments().getString(ARG_PARAM1);
             mParam2 = getArguments().getString(ARG_PARAM2);
         }
+        // create an empty list of data to be displayed
+        this.mTasks = new ArrayList<Task>();
+
+
     }
 
     @Override
@@ -96,22 +103,20 @@ public class TaskRecyclerViewFragment extends Fragment {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
-        // get some sample tasks
-        TaskRepository repo = TaskRepository.getRepository(getContext());
-        List<Task> tasks = repo.getSyntheticTasks(1000);
+        // setup the RecyclerView
 
         // get the RecycylerView on the UI
         RecyclerView rv = view.findViewById(R.id.rv_taskRecyclerView);
 
-        // create a new Adapter for the RecyclerView
-        RecyclerView.Adapter adapter = new TaskRecyclerViewAdapter(getContext(), tasks);
-        // set the recycler view's adapter
-        rv.setAdapter(adapter);
+        // create a new Adapter for the RecyclerView with the empty list
+        rvAdapter = new TaskRecyclerViewAdapter(getContext(), this.mTasks);
+        // set the recycler view's rv_adapter
+        rv.setAdapter(rvAdapter);
         // setup the layout manager on the recycler view
         rv.setLayoutManager(new LinearLayoutManager(getContext()));
 
-        // commenting out for now
-//        donwloadAllTasks();
+        // now get the Tasks from the remote endpoint
+        donwloadAllTasks();
     }
 
     /**
@@ -125,7 +130,8 @@ public class TaskRecyclerViewFragment extends Fragment {
                 new Response.Listener<String>() {
                     @Override
                     public void onResponse(String response) {
-                        List<Task> tasks = new ArrayList<Task>();
+                        // empty the list of tasks that are currently being displayed
+                        mTasks.clear();
                         try {
                             JSONObject jsonObject = new JSONObject(response);
                             JSONObject tasksObject = jsonObject.getJSONObject("tasks");
@@ -153,15 +159,21 @@ public class TaskRecyclerViewFragment extends Fragment {
                                 // set the status
                                 task.setStatus(TaskStatus.valueOf(status));
                                 // add that information to the tasks list
-                                tasks.add(task);                            }
+                                mTasks.add(task);
+                            }
                             // update the UI
                         } catch (JSONException e) {
                             e.printStackTrace();
                             Toast.makeText(getContext(), R.string.download_error_json, Toast.LENGTH_LONG);
 
+                        } finally {
+
+                            Log.d(TAG, "downloaded " + mTasks.size() + " tasks");
+                            Log.d(TAG, mTasks.toString());
+
+                            // update the RecyclerView adapter
+                            rvAdapter.notifyDataSetChanged();
                         }
-                        Log.d(TAG, "downloaded " + tasks.size() + " tasks");
-                        Log.d(TAG, tasks.toString());
                     }
 
                 }, new Response.ErrorListener() {
@@ -173,7 +185,7 @@ public class TaskRecyclerViewFragment extends Fragment {
                 }
             });
             RequestQueue queue = Volley.newRequestQueue(getContext());
-        queue.add(stringRequest);
+            queue.add(stringRequest);
 
     }
 }
