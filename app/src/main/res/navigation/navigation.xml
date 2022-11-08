@@ -31,6 +31,9 @@
         <action
             android:id="@+id/action_create_task_to_home"
             app:destination="@id/homeFragment" />
+        <action
+            android:id="@+id/action_createTaskFragment_to_taskRecyclerViewActivity"
+            app:destination="@id/taskRecyclerViewActivity" />
     </fragment>
     <fragment
         android:id="@+id/taskRecyclerViewActivity"
@@ -50,5 +53,9 @@
         android:id="@+id/taskListViewFragment"
         android:name="uk.ac.rgu.rgtodu.TaskListViewFragment"
         android:label="fragment_task_list_view"
-        tools:layout="@layout/fragment_task_list_view" />
+        tools:layout="@layout/fragment_task_list_view" >
+        <action
+            android:id="@+id/action_taskListViewFragment_to_viewTaskFragment"
+            app:destination="@id/viewTaskFragment" />
+    </fragment>
 </navigation>
