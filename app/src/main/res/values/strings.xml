@@ -41,6 +41,8 @@
     <string name="btn_view_add_calendar">Add deadline to calendar</string>
     <string name="btn_view_do_task">Give me 25 minutes to do this task</string>
 
+    <string name="btn_delete_task">Delete Task</string>
+
     <!-- task list item view adapter -->
     <string name="tv_taskListPomodoros">%1$d pomodoros remaining</string>
     <string name="download_error">Error with downloading tasks, sorry.</string>

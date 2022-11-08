@@ -137,6 +137,15 @@
         app:layout_constraintStart_toEndOf="@+id/tv_viewTaskDeadlineValue"
         app:layout_constraintTop_toBottomOf="@+id/tv_viewPomodorosRemaining" />
 
+    <Button
+        android:id="@+id/btn_viewDeleteTask"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="8dp"
+        android:text="@string/btn_delete_task"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent" />
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>

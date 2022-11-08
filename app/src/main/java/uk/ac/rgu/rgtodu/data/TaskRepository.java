@@ -3,12 +3,17 @@ package uk.ac.rgu.rgtodu.data;
 import static java.security.AccessController.getContext;
 
 import android.content.Context;
+import android.net.Uri;
 import android.util.Log;
 
+import androidx.annotation.Nullable;
+
+import com.android.volley.AuthFailureError;
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
+import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
 
@@ -17,8 +22,10 @@ import org.json.JSONObject;
 
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 import java.util.Random;
 
 /**
@@ -30,6 +37,11 @@ public class TaskRepository {
 
     // tag for logging
     private static final String TAG = "TaskRepository";
+
+    // URL for the list of tasks for dcorsar
+    private final String REMOTE_TASKS_URL_BASE ="https://cm3110-2022-default-rtdb.firebaseio.com/dcorsar/tasks";
+    private final String REMOTE_TASK_LIST_URL = REMOTE_TASKS_URL_BASE + ".json";
+
 
     /**
      * A field for how dates should be formatted before displaying to users
@@ -143,12 +155,59 @@ public class TaskRepository {
 
 
     /**
-     * Stores task in the database
+     * Stores task in the database and the cloud data store
      * @param task The {@link Task} to store in the Room database.
      */
-    public void storeTask(Task task){
-        // todo store task
+    public void storeTask(Task task) {
         Log.d(TAG, "Saving task " + task);
+        // store in remote Firebase Database
+        storeTaskInRemoteDatabase(task);
+    }
+
+    /**
+     * Stores task in a Firebase Realtime Database
+     * @param task
+     */
+    private void storeTaskInRemoteDatabase(Task task){
+        // convert Task to a JSON object for uploading
+        JSONObject js = new JSONObject();
+        try {
+            JSONObject taskObj = new JSONObject();
+            taskObj.put("name", task.getName());
+            taskObj.put("objective", task.getObjective());
+            taskObj.put("pomodorosRemaining", String.valueOf(task.getPomodorosRemaining()));
+            taskObj.put("deadline",String.valueOf(task.getDeadline().getTime()));
+            taskObj.put("priority",task.getPriority().getLabel());
+            taskObj.put("status",task.getStatus().getLabel());
+            js.put(String.valueOf(task.getId()), taskObj);
+        } catch (JSONException e) {
+            e.printStackTrace();
+        } finally {
+            // check we have something to upload
+            if (js.has((String.valueOf(task.getId())))){
+
+                // using a Patch request to update the list of tasks
+                // see https://firebase.google.com/docs/reference/rest/database
+                JsonObjectRequest request = new JsonObjectRequest(Request.Method.PATCH, REMOTE_TASK_LIST_URL, js,
+                        new Response.Listener<JSONObject>() {
+                            @Override
+                            public void onResponse(JSONObject response) {
+                                // TODO: something more useful here
+                                Log.d(TAG, "Successfully uploaded task ");
+                            }
+                        }, new Response.ErrorListener() {
+                    @Override
+                    public void onErrorResponse(VolleyError error) {
+                        // TODO: something more useful here
+                        Log.e(TAG, "Error uploaded task ");
+                    }
+                });
+
+                // make the request
+                RequestQueue queue = Volley.newRequestQueue(context);
+                queue.add(request);
+            }
+        }
     }
 
     /**
@@ -181,7 +240,40 @@ public class TaskRepository {
      * @param task The {@link Task} to delete from the Room database.
      */
     public void deleteTask(Task task){
-       // todo delete task
+       // todo delete task in local database
+
+        deleteTaskInRemoteDatabase(task);
+    }
+
+    /**
+     * Deletes the task in the remote Firebase Realtime database
+     * @param task
+     */
+    private void deleteTaskInRemoteDatabase(Task task){
+        // create the URL for this task
+        // which is the REMOTE_TASK_URL_BASE/<task id>.json
+        Uri uri = Uri.parse(String.format("%s/%s.json", REMOTE_TASKS_URL_BASE, String.valueOf(task.getId())));
+
+        // using a Delete request to remove the task from the list of tasks
+        // see https://firebase.google.com/docs/reference/rest/database
+        StringRequest request = new StringRequest(Request.Method.DELETE, uri.toString(),
+                new Response.Listener<String>() {
+                    @Override
+                    public void onResponse(String response) {
+                        // TODO: something more useful here
+                        Log.d(TAG, "Successfully uploaded task ");
+                    }
+                }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                // TODO: something more useful here
+                Log.e(TAG, "Error uploaded task ");
+            }
+        });
+
+        // make the request
+        RequestQueue queue = Volley.newRequestQueue(context);
+        queue.add(request);
     }
 
 
