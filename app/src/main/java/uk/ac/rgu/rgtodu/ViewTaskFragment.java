@@ -10,6 +10,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.TextView;
 
 import java.text.DateFormat;
@@ -25,7 +26,7 @@ import uk.ac.rgu.rgtodu.data.TaskStatus;
  * Use the {@link ViewTaskFragment#newInstance} factory method to
  * create an instance of this fragment.
  */
-public class ViewTaskFragment extends Fragment {
+public class ViewTaskFragment extends Fragment implements View.OnClickListener{
 
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
@@ -136,6 +137,10 @@ public class ViewTaskFragment extends Fragment {
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
+        // add click listener to the delete button
+        Button btnDelete = view.findViewById(R.id.btn_viewDeleteTask);
+        btnDelete.setOnClickListener(this);
+
         // check if savedInstanceState has a task in it to display
         // i.e. recovering from a configuration change
         // savedInstanceState will be null if its the first time this is running
@@ -147,6 +152,8 @@ public class ViewTaskFragment extends Fragment {
             }
         }
         displayTask(view, this.mTask);
+
+
     }
 
     /**
@@ -196,5 +203,16 @@ public class ViewTaskFragment extends Fragment {
         DateFormat format = SimpleDateFormat.getDateInstance();
         String formattedDate = format.format(task.getDeadline());
         tv_dateValue.setText(formattedDate);
+    }
+
+    @Override
+    public void onClick(View view) {
+        // for the delete task button
+        if (view.getId() == R.id.btn_viewDeleteTask){
+            // if we're displaying a task, then delete it
+            if (this.mTask != null){
+                TaskRepository.getRepository(getContext()).deleteTask(this.mTask);
+            }
+        }
     }
 }
