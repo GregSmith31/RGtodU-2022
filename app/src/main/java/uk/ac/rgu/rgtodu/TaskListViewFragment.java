@@ -74,7 +74,7 @@ public class TaskListViewFragment extends Fragment implements AdapterView.OnItem
         ListView lv_Tasks = view.findViewById(R.id.lv_tasks);
 
         // for just using the toString method of Task
-        /** Uncomment this to use just the toString() ***
+        /** Uncomment this to use just the toString() ***/
         ArrayAdapter<Task> adapter = new ArrayAdapter<Task>(
                                  getContext(),
                           android.R.layout.simple_list_item_1,
@@ -84,7 +84,7 @@ public class TaskListViewFragment extends Fragment implements AdapterView.OnItem
 
          // set a listener for when the user clicks on a row in the ListView
          lv_Tasks.setOnItemClickListener(this);
-         **** end of code for just using the toString() */
+         /**** end of code for just using the toString() */
 
         // for providing a List of alternative Strings
         /*** Uncomment this to use an adapter with alternative Strings ***
@@ -106,11 +106,11 @@ public class TaskListViewFragment extends Fragment implements AdapterView.OnItem
 
         // for using a custom Adapter to display each task
         /*** Comment out the following few lines if using a different approach ***/
-        TaskListItemViewAdapter customAdapter = new TaskListItemViewAdapter(
-                getContext(), R.layout.task_list_view_item, tasks
-        );
+//        TaskListItemViewAdapter customAdapter = new TaskListItemViewAdapter(
+//                getContext(), R.layout.task_list_view_item, tasks
+//        );
         // Associate the Adapter with the ListView
-        lv_Tasks.setAdapter(customAdapter);
+        //lv_Tasks.setAdapter(customAdapter);
         /* end of code to comment out for custom adapter */
     }
 

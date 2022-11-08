@@ -96,22 +96,16 @@ public class TaskRecyclerViewFragment extends Fragment {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
-        // get some sample tasks
-        TaskRepository repo = TaskRepository.getRepository(getContext());
-        List<Task> tasks = repo.getSyntheticTasks(1000);
+        //  get some data
+        List<Task> tasks = TaskRepository.getRepository(getContext()).getSyntheticTasks(1000);
 
-        // get the RecycylerView on the UI
+        // get the RecyclerView
         RecyclerView rv = view.findViewById(R.id.rv_taskRecyclerView);
-
-        // create a new Adapter for the RecyclerView
-        RecyclerView.Adapter adapter = new TaskRecyclerViewAdapter(getContext(), tasks);
-        // set the recycler view's adapter
+        TaskRecyclerViewAdapter adapter = new TaskRecyclerViewAdapter(getContext(), tasks);
         rv.setAdapter(adapter);
-        // setup the layout manager on the recycler view
+
         rv.setLayoutManager(new LinearLayoutManager(getContext()));
 
-        // commenting out for now
-//        donwloadAllTasks();
     }
 
     /**
