@@ -4,19 +4,26 @@ import android.os.Parcel;
 import android.os.Parcelable;
 
 
+import androidx.annotation.NonNull;
+import androidx.room.ColumnInfo;
+import androidx.room.Entity;
+import androidx.room.PrimaryKey;
+
 import java.util.Date;
 
 /**
  * A piece of work that needs to be done
  * @author David Corsar
  */
+@Entity(tableName = "task")
 public class Task implements Parcelable {
 
+    @NonNull
+    @PrimaryKey(autoGenerate = true)
     private int uid;
 
     // id for the task
     private long id;
-
 
     // reference name for the task
     private String name;
@@ -27,6 +34,7 @@ public class Task implements Parcelable {
     // what the status of the task is
     private TaskStatus status;
      // estimate of how many pomodoros it will take to complete
+     @ColumnInfo(name = "Poms_Left")
     private int pomodorosRemaining;
     // when the task needs to be completed byo
     private Date deadline;

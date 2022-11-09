@@ -132,7 +132,7 @@ public class CreateTaskFragment extends Fragment implements View.OnClickListener
                 task.setStatus(TaskStatus.COMPLETE);
             }
 
-            // TODO now save the task
+            // now save the task
             TaskRepository repo = TaskRepository.getRepository(getContext());
             repo.storeTask(task);
 

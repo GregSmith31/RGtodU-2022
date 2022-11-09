@@ -42,6 +42,10 @@ public class TaskRepository {
     private final String REMOTE_TASKS_URL_BASE ="https://cm3110-2022-default-rtdb.firebaseio.com/dcorsar/tasks";
     private final String REMOTE_TASK_LIST_URL = REMOTE_TASKS_URL_BASE + ".json";
 
+    /**
+     * Member field for database operations
+     */
+    private TaskDao mTaskDao;
 
     /**
      * A field for how dates should be formatted before displaying to users
@@ -67,6 +71,8 @@ public class TaskRepository {
         super();
         this.context = context;
 
+        // setup for taskDao for accessing the database
+        mTaskDao = TaskDatabase.getDatabase(context).taskDao();
     }
 
     /**
@@ -160,6 +166,9 @@ public class TaskRepository {
      */
     public void storeTask(Task task) {
         Log.d(TAG, "Saving task " + task);
+        // store in the local database
+        this.mTaskDao.insert(task);
+
         // store in remote Firebase Database
         storeTaskInRemoteDatabase(task);
     }
@@ -215,8 +224,10 @@ public class TaskRepository {
      * @param tasks The {@link List} of {@link Task}s to store in the Room database.
      */
     public void storeTasks(List<Task> tasks){
-       // todo store task
+        // store in the local database
+        this.mTaskDao.insertTasks(tasks);
 
+        // TODO store in the remote database
     }
 
     /**
@@ -224,7 +235,8 @@ public class TaskRepository {
      * @param task The {@link Task} to store in the Room database.
      */
     public void updateTask(Task task){
-      // todo update task
+        this.mTaskDao.update(task);
+      // todo update task in remote database
     }
 
     /**
@@ -232,7 +244,8 @@ public class TaskRepository {
      * @param tasks The {@link List} of {@link Task}s to store in the Room database.
      */
     public void updateTasks(List<Task> tasks){
-       // todo update tasks
+        this.mTaskDao.updateTasks(tasks);
+       // todo update tasks in the remote database
     }
 
     /**
@@ -240,9 +253,11 @@ public class TaskRepository {
      * @param task The {@link Task} to delete from the Room database.
      */
     public void deleteTask(Task task){
-       // todo delete task in local database
+       // delete task in local database
+       this.mTaskDao.delete(task);
 
-        deleteTaskInRemoteDatabase(task);
+       // delete in the remote database
+       deleteTaskInRemoteDatabase(task);
     }
 
     /**
