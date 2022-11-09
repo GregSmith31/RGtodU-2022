@@ -29,6 +29,7 @@ import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
 
+import uk.ac.rgu.rgtodu.data.JsonFirebaseTasksToTaskConverter;
 import uk.ac.rgu.rgtodu.data.Task;
 import uk.ac.rgu.rgtodu.data.TaskPriority;
 import uk.ac.rgu.rgtodu.data.TaskStatus;
@@ -133,34 +134,12 @@ public class TaskRecyclerViewFragment extends Fragment {
                         // empty the list of tasks that are currently being displayed
                         mTasks.clear();
                         try {
-                            JSONObject jsonObject = new JSONObject(response);
-                            JSONObject tasksObject = jsonObject.getJSONObject("tasks");
-                            for (Iterator<String> it = tasksObject.keys(); it.hasNext();){
-                                String taskId = it.next();
-                                // extract the key information
-                                JSONObject taskObj = tasksObject.getJSONObject(taskId);
-                                String name = taskObj.getString("name");
-                                String objective = taskObj.getString("objective");
-                                int pomodoros = taskObj.getInt("pomodorosRemaining");
-                                long deadlineL = taskObj.getLong("deadline");
-                                String priority = taskObj.getString("priority");
-                                String status = taskObj.getString("status");
+                            JsonFirebaseTasksToTaskConverter converter = new JsonFirebaseTasksToTaskConverter();
 
-                                // now create a Task based on it
-                                Task task = new Task();
-                                task.setName(name);
-                                task.setObjective(objective);
-                                task.setPomodorosRemaining(pomodoros);
-                                task.setPriority(TaskPriority.valueOf(priority));
-                                // convert the long timestampe to a date
-                                Date deadLineDate = new Date();
-                                deadLineDate.setTime(deadlineL);
-                                task.setDeadline(deadLineDate);
-                                // set the status
-                                task.setStatus(TaskStatus.valueOf(status));
-                                // add that information to the tasks list
-                                mTasks.add(task);
-                            }
+                            // convert the respond to the root Json object
+                            JSONObject jsonObject = new JSONObject(response);
+                            mTasks.addAll(converter.convertJsonTasks(jsonObject));
+
                             // update the UI
                         } catch (JSONException e) {
                             e.printStackTrace();
