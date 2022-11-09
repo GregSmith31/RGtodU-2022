@@ -231,13 +231,13 @@ public class ViewTaskFragment extends Fragment implements AdapterView.OnClickLis
             // check that the intent can be resolved on this device
 
             // this should run; however, always returns null so commented out for now.
-            if (intent.resolveActivity(getActivity().getApplicationContext().getPackageManager()) != null) {
+//            if (intent.resolveActivity(getActivity().getApplicationContext().getPackageManager()) != null) {
             // it can, so do it
             startActivity(intent);
-            } else {
-//                // error handling in case can't launch it
-                Toast.makeText(getContext().getApplicationContext(), R.string.view_lauch_timer_error, Toast.LENGTH_LONG);
-            }
+//            } else {
+////                // error handling in case can't launch it
+//                Toast.makeText(getContext().getApplicationContext(), R.string.view_lauch_timer_error, Toast.LENGTH_LONG);
+//            }
         } else if (view.getId() == R.id.btn_view_add_calendar){
             // launce the calendar app, adding the task name and deadline
             // based on code from https://developer.android.com/guide/components/intents-common#AddEvent
