@@ -244,6 +244,9 @@ public class ViewTaskFragment extends Fragment implements AdapterView.OnClickLis
             Intent intent = new Intent(Intent.ACTION_INSERT)
                     .setData(CalendarContract.Events.CONTENT_URI)
                     .putExtra(CalendarContract.Events.TITLE, mTask.getName())
+                    .putExtra(CalendarContract.Events.DESCRIPTION, mTask.getObjective())
+                    .putExtra(CalendarContract.Events.ALL_DAY, String.valueOf(true))
+                    .putExtra(CalendarContract.EXTRA_EVENT_BEGIN_TIME, mTask.getDeadline().getTime())
                     .putExtra(CalendarContract.EXTRA_EVENT_END_TIME, mTask.getDeadline().getTime());
 //            if (intent.resolveActivity(getActivity().getPackageManager()) != null) {
                 startActivity(intent);
