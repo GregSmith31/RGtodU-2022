@@ -40,7 +40,7 @@
     <string name="btn_taskListItemView">View Task</string>
     <string name="btn_view_add_calendar">Add deadline to calendar</string>
     <string name="btn_view_do_task">Give me 25 minutes to do this task</string>
-
+    <string name="view_lauch_timer_error">Sorry, unable to start a timer.</string>
     <string name="btn_delete_task">Delete Task</string>
 
     <!-- task list item view adapter -->

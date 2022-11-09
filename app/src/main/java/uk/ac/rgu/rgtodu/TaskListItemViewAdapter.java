@@ -1,6 +1,7 @@
 package uk.ac.rgu.rgtodu;
 
 import android.content.Context;
+import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -12,6 +13,7 @@ import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.navigation.Navigation;
 
 import java.util.List;
 
@@ -91,6 +93,17 @@ public class TaskListItemViewAdapter extends ArrayAdapter<Task>  {
             public void onClick(View view) {
                 Task task = tasks.get(position);
                 Log.d("TASK_CLICKED", task.getName());
+                // create a Bundle and navigate to the ViewTaskFragment
+                Bundle bundle = new Bundle();
+                // it shouldn't but just in case
+                if (task != null){
+                    bundle.putParcelable(ViewTaskFragment.ARG_TASK, task);
+                }
+                Log.d("TASKS", "ListView item is " + task.getName());
+
+                // launch the action
+                Navigation.findNavController(view).navigate(R.id.action_taskListViewFragment_to_viewTaskFragment, bundle);
+
             }
         });
 

@@ -1,11 +1,14 @@
 package uk.ac.rgu.rgtodu;
 
+import android.content.Intent;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
+import android.provider.AlarmClock;
+import android.provider.CalendarContract;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -13,6 +16,7 @@ import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
@@ -134,6 +138,12 @@ public class ViewTaskFragment extends Fragment implements AdapterView.OnClickLis
         Button btnDelete = view.findViewById(R.id.btn_viewDeleteTask);
         btnDelete.setOnClickListener(this);
 
+        // add click listener for the other buttons
+        Button btnDoTask = view.findViewById(R.id.btn_view_do_task);
+        btnDoTask.setOnClickListener(this);
+        Button btnAddToCalendar = view.findViewById(R.id.btn_view_add_calendar);
+        btnAddToCalendar.setOnClickListener(this);
+
         // if mTask is not null, then it was passed as an argument
         if (this.mTask != null){
             displayTask(view, this.mTask);
@@ -209,6 +219,36 @@ public class ViewTaskFragment extends Fragment implements AdapterView.OnClickLis
             if (this.mTask != null){
                 TaskRepository.getRepository(getContext()).deleteTask(this.mTask);
             }
+        } else if (view.getId() == R.id.btn_view_do_task){
+            // launch the clock app with a timer for 25 minutes
+            // create a new Intent to launch the timer app
+            // based on the code from https://developer.android.com/guide/components/intents-common#Clock
+            Intent intent = new Intent(AlarmClock.ACTION_SET_TIMER);
+            // set the length to 20 minutes
+            intent.putExtra(AlarmClock.EXTRA_LENGTH, 1500);
+            // use the task name as a message
+            intent.putExtra(AlarmClock.EXTRA_MESSAGE, mTask.getName());
+            // check that the intent can be resolved on this device
+
+            // this should run; however, always returns null so commented out for now.
+            if (intent.resolveActivity(getActivity().getApplicationContext().getPackageManager()) != null) {
+            // it can, so do it
+            startActivity(intent);
+            } else {
+//                // error handling in case can't launch it
+                Toast.makeText(getContext().getApplicationContext(), R.string.view_lauch_timer_error, Toast.LENGTH_LONG);
+            }
+        } else if (view.getId() == R.id.btn_view_add_calendar){
+            // launce the calendar app, adding the task name and deadline
+            // based on code from https://developer.android.com/guide/components/intents-common#AddEvent
+            Intent intent = new Intent(Intent.ACTION_INSERT)
+                    .setData(CalendarContract.Events.CONTENT_URI)
+                    .putExtra(CalendarContract.Events.TITLE, mTask.getName())
+                    .putExtra(CalendarContract.EXTRA_EVENT_END_TIME, mTask.getDeadline().getTime());
+            if (intent.resolveActivity(getActivity().getPackageManager()) != null) {
+                startActivity(intent);
+            }
+
         }
     }
 }
