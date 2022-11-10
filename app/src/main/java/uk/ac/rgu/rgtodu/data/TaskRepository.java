@@ -91,20 +91,20 @@ public class TaskRepository {
     }
 
     /**
-     * Returns a fake Task for testing purposes
+     * Returns a Task with the id id, if one exists in the local database
      * @return a fake {@link Task} for testing
      */
 
-    public Task getTask(){
-        return getSyntheticTask();
+    public Task getTask(long id){
+        return mTaskDao.findTaskById(id);
     }
 
     /**
-     * Gets all the tasks in the database
+     * Gets all the tasks in the local database
      * @return a {@link List} of sample {@link Task} entities for testing
      */
     public List<Task> getAllTasks(){
-        return getSyntheticTasks(20);
+        return mTaskDao.getAllTasks();
     }
 
     /**
@@ -161,13 +161,12 @@ public class TaskRepository {
 
 
     /**
-     * Stores task in the database and the cloud data store
-     * @param task The {@link Task} to store in the Room database.
+     * Stores task in the cloud data store, and if that's successful, the local database
+     * @param task The {@link Task} to store in the databases.
      */
     public void storeTask(Task task) {
         Log.d(TAG, "Saving task " + task);
-        // store in the local database
-        this.mTaskDao.insert(task);
+
 
         // store in remote Firebase Database
         storeTaskInRemoteDatabase(task);
@@ -203,6 +202,8 @@ public class TaskRepository {
                             public void onResponse(JSONObject response) {
                                 // TODO: something more useful here
                                 Log.d(TAG, "Successfully uploaded task ");
+                                // store in the local database
+                                mTaskDao.insert(task);
                             }
                         }, new Response.ErrorListener() {
                     @Override
@@ -228,6 +229,8 @@ public class TaskRepository {
         this.mTaskDao.insertTasks(tasks);
 
         // TODO store in the remote database
+        // although as the app never stores multiple tasks,
+        // this isn't really needed
     }
 
     /**
@@ -236,7 +239,8 @@ public class TaskRepository {
      */
     public void updateTask(Task task){
         this.mTaskDao.update(task);
-      // todo update task in remote database
+      // todo update task in remote database, although
+        // as the app never updates tasks, this isn't really necessary
     }
 
     /**
@@ -245,17 +249,15 @@ public class TaskRepository {
      */
     public void updateTasks(List<Task> tasks){
         this.mTaskDao.updateTasks(tasks);
-       // todo update tasks in the remote database
+       // todo update tasks in the remote database,, although
+        // as the app never updates tasks, this isn't really necessary
     }
 
     /**
-     * Deletes task from the database
-     * @param task The {@link Task} to delete from the Room database.
+     * Deletes task from the databases
+     * @param task The {@link Task} to delete from the database.
      */
     public void deleteTask(Task task){
-       // delete task in local database
-       this.mTaskDao.delete(task);
-
        // delete in the remote database
        deleteTaskInRemoteDatabase(task);
     }
@@ -277,6 +279,8 @@ public class TaskRepository {
                     public void onResponse(String response) {
                         // TODO: something more useful here
                         Log.d(TAG, "Successfully uploaded task ");
+                        // delete task in local database
+                        mTaskDao.delete(task);
                     }
                 }, new Response.ErrorListener() {
             @Override

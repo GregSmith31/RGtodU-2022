@@ -18,6 +18,9 @@ public interface TaskDao {
     @Query("Select * from task WHERE name like :name")
     public List<Task> findTasksByName(String name);
 
+    @Query("Select * from task where id like :id")
+    public Task findTaskById(long id);
+
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     public void insert(Task task);
 
