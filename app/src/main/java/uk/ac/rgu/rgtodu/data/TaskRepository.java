@@ -260,7 +260,7 @@ public class TaskRepository {
     public void deleteTask(Task task){
         // delete task in local database
         mTaskDao.delete(task);
-        
+
        // delete in the remote database
        deleteTaskInRemoteDatabase(task);
     }
