@@ -32,6 +32,7 @@ import java.util.List;
 import uk.ac.rgu.rgtodu.data.JsonFirebaseTasksToTaskConverter;
 import uk.ac.rgu.rgtodu.data.Task;
 import uk.ac.rgu.rgtodu.data.TaskPriority;
+import uk.ac.rgu.rgtodu.data.TaskRepository;
 import uk.ac.rgu.rgtodu.data.TaskStatus;
 
 /**
@@ -117,7 +118,12 @@ public class TaskRecyclerViewFragment extends Fragment {
         rv.setLayoutManager(new LinearLayoutManager(getContext()));
 
         // now get the Tasks from the remote endpoint
-        donwloadAllTasks();
+        // donwloadAllTasks();
+        // commented out, as now we're using the local database
+        mTasks.clear();
+        List<Task> takss = TaskRepository.getRepository(getContext()).getAllTasks();
+        mTasks.addAll(takss);
+        rvAdapter.notifyDataSetChanged();
     }
 
     /**

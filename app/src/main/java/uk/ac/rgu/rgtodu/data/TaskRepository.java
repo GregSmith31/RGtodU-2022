@@ -258,6 +258,9 @@ public class TaskRepository {
      * @param task The {@link Task} to delete from the database.
      */
     public void deleteTask(Task task){
+        // delete task in local database
+        mTaskDao.delete(task);
+        
        // delete in the remote database
        deleteTaskInRemoteDatabase(task);
     }
@@ -279,8 +282,7 @@ public class TaskRepository {
                     public void onResponse(String response) {
                         // TODO: something more useful here
                         Log.d(TAG, "Successfully uploaded task ");
-                        // delete task in local database
-                        mTaskDao.delete(task);
+
                     }
                 }, new Response.ErrorListener() {
             @Override

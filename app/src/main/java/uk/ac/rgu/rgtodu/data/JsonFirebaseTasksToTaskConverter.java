@@ -36,6 +36,7 @@ public class JsonFirebaseTasksToTaskConverter {
 
             // now create a Task based on it
             Task task = new Task();
+            task.setId(Long.parseLong(taskId));
             task.setName(name);
             task.setObjective(objective);
             task.setPomodorosRemaining(pomodoros);
