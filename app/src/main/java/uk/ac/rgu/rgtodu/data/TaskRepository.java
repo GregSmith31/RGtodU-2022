@@ -7,6 +7,7 @@ import android.net.Uri;
 import android.util.Log;
 
 import androidx.annotation.Nullable;
+import androidx.lifecycle.LiveData;
 
 import com.android.volley.AuthFailureError;
 import com.android.volley.Request;
@@ -27,6 +28,8 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Random;
+import java.util.concurrent.Executor;
+import java.util.concurrent.Executors;
 
 /**
  * This class provides the single point of truth in the app for {@link TaskRepository}s, and
@@ -46,6 +49,11 @@ public class TaskRepository {
      * Member field for database operations
      */
     private TaskDao mTaskDao;
+
+    /**
+     * Member field for all tasks
+     */
+    private LiveData<List<Task>> mAllTasks;
 
     /**
      * A field for how dates should be formatted before displaying to users
@@ -73,6 +81,9 @@ public class TaskRepository {
 
         // setup for taskDao for accessing the database
         mTaskDao = TaskDatabase.getDatabase(context).taskDao();
+
+        // get all the tasks
+        mAllTasks = mTaskDao.getAllTasks();
     }
 
     /**
@@ -103,8 +114,8 @@ public class TaskRepository {
      * Gets all the tasks in the local database
      * @return a {@link List} of sample {@link Task} entities for testing
      */
-    public List<Task> getAllTasks(){
-        return mTaskDao.getAllTasks();
+    public LiveData<List<Task>> getAllTasks(){
+        return mAllTasks;
     }
 
     /**
@@ -167,7 +178,6 @@ public class TaskRepository {
     public void storeTask(Task task) {
         Log.d(TAG, "Saving task " + task);
 
-
         // store in remote Firebase Database
         storeTaskInRemoteDatabase(task);
     }
@@ -202,8 +212,17 @@ public class TaskRepository {
                             public void onResponse(JSONObject response) {
                                 // TODO: something more useful here
                                 Log.d(TAG, "Successfully uploaded task ");
-                                // store in the local database
-                                mTaskDao.insert(task);
+
+                                // store in a background thread
+                                Executor exe = Executors.newSingleThreadExecutor();
+                                exe.execute(new Runnable() {
+                                    @Override
+                                    public void run() {
+                                        // store in the local database
+                                        mTaskDao.insert(task);
+                                    }
+                                });
+
                             }
                         }, new Response.ErrorListener() {
                     @Override
@@ -226,7 +245,16 @@ public class TaskRepository {
      */
     public void storeTasks(List<Task> tasks){
         // store in the local database
-        this.mTaskDao.insertTasks(tasks);
+        // store in a background thread
+        Executor exe = Executors.newSingleThreadExecutor();
+        exe.execute(new Runnable() {
+            @Override
+            public void run() {
+                // store in the local database
+                mTaskDao.insertTasks(tasks);
+            }
+        });
+
 
         // TODO store in the remote database
         // although as the app never stores multiple tasks,
@@ -238,7 +266,17 @@ public class TaskRepository {
      * @param task The {@link Task} to store in the Room database.
      */
     public void updateTask(Task task){
-        this.mTaskDao.update(task);
+        // update on the background thread
+        Executor exe = Executors.newSingleThreadExecutor();
+        exe.execute(new Runnable() {
+            @Override
+            public void run() {
+                // store in the local database
+                mTaskDao.update(task);
+            }
+        });
+
+
       // todo update task in remote database, although
         // as the app never updates tasks, this isn't really necessary
     }
@@ -248,7 +286,17 @@ public class TaskRepository {
      * @param tasks The {@link List} of {@link Task}s to store in the Room database.
      */
     public void updateTasks(List<Task> tasks){
-        this.mTaskDao.updateTasks(tasks);
+        // update on the background thread
+        Executor exe = Executors.newSingleThreadExecutor();
+        exe.execute(new Runnable() {
+            @Override
+            public void run() {
+                // store in the local database
+                mTaskDao.updateTasks(tasks);
+            }
+        });
+
+
        // todo update tasks in the remote database,, although
         // as the app never updates tasks, this isn't really necessary
     }
@@ -258,8 +306,17 @@ public class TaskRepository {
      * @param task The {@link Task} to delete from the database.
      */
     public void deleteTask(Task task){
-        // delete task in local database
-        mTaskDao.delete(task);
+        // delete task in local database on background thread
+        Executor exe = Executors.newSingleThreadExecutor();
+        exe.execute(new Runnable() {
+            @Override
+            public void run() {
+                // delete from the local database
+                mTaskDao.delete(task);
+            }
+        });
+
+
 
        // delete in the remote database
        deleteTaskInRemoteDatabase(task);

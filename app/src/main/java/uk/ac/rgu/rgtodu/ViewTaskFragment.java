@@ -6,6 +6,8 @@ import android.os.Bundle;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
+import androidx.navigation.NavController;
+import androidx.navigation.Navigation;
 
 import android.provider.AlarmClock;
 import android.provider.CalendarContract;
@@ -218,6 +220,8 @@ public class ViewTaskFragment extends Fragment implements AdapterView.OnClickLis
             // if we're displaying a task, then delete it
             if (this.mTask != null){
                 TaskRepository.getRepository(getContext()).deleteTask(this.mTask);
+                NavController navController = Navigation.findNavController(view);
+                navController.navigate(R.id.action_viewTask_to_home);
             }
         } else if (view.getId() == R.id.btn_view_do_task){
             // launch the clock app with a timer for 25 minutes

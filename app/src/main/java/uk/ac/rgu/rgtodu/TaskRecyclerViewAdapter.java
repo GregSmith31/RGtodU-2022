@@ -9,6 +9,7 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
+import androidx.lifecycle.LiveData;
 import androidx.navigation.Navigation;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -21,7 +22,7 @@ public class TaskRecyclerViewAdapter extends RecyclerView.Adapter<TaskRecyclerVi
     // member variables for the context the adapter is working in
     private Context context;
     // the data thats going to be displayed
-    private List<Task> tasks;
+    LiveData<List<Task>> tasks;
 
     // TAG for logging
     private static final String TAG = "TaskRecyclerViewAdapter";
@@ -31,7 +32,7 @@ public class TaskRecyclerViewAdapter extends RecyclerView.Adapter<TaskRecyclerVi
      * @param context that the adapter is working in
      * @param tasks data to be displayed
      */
-    public TaskRecyclerViewAdapter(Context context, List<Task> tasks){
+    public TaskRecyclerViewAdapter(Context context, LiveData<List<Task>> tasks){
         super();
         // initialise the member variables
         this.context = context;
@@ -42,7 +43,7 @@ public class TaskRecyclerViewAdapter extends RecyclerView.Adapter<TaskRecyclerVi
      * Set the data being displayed in this adapter to be tasks
      * @param tasks The {@link List} of {@link Task}s to be displayed
      */
-    public void setTasks(List<Task> tasks){
+    public void setTasks(LiveData<List<Task>> tasks){
         this.tasks = tasks;
     }
 
@@ -60,7 +61,7 @@ public class TaskRecyclerViewAdapter extends RecyclerView.Adapter<TaskRecyclerVi
     @Override
     public void onBindViewHolder(@NonNull TaskViewHolder holder, int position) {
         // get the task at position
-        Task task = this.tasks.get(position);
+        Task task = this.tasks.getValue().get(position);
 
         // update the task name
         TextView tv_taskName = holder.itemView.findViewById(R.id.tv_taskListItemName);
@@ -74,7 +75,8 @@ public class TaskRecyclerViewAdapter extends RecyclerView.Adapter<TaskRecyclerVi
 
     @Override
     public int getItemCount() {
-        return this.tasks.size();
+        // if tasks is null, return 0, otherwise return the size of tasks
+        return (this.tasks.getValue() == null)? 0 :this.tasks.getValue().size();
     }
 
     /**
@@ -105,7 +107,7 @@ public class TaskRecyclerViewAdapter extends RecyclerView.Adapter<TaskRecyclerVi
             int position = getAdapterPosition();
 
             // get the task at that position
-            Task task = this.adapter.tasks.get(position);
+            Task task = this.adapter.tasks.getValue().get(position);
 
             // display a log message with the task's name
             Log.d(TAG, task.getName() );

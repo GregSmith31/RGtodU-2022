@@ -57,6 +57,9 @@
             android:name="task_name"
             app:argType="string"
             android:defaultValue="Dog of Wisdom" />
+        <action
+            android:id="@+id/action_viewTask_to_home"
+            app:destination="@id/homeFragment" />
     </fragment>
     <fragment
         android:id="@+id/taskListViewFragment"

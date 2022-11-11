@@ -5,6 +5,9 @@ import android.os.Bundle;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
+import androidx.lifecycle.LiveData;
+import androidx.lifecycle.Observer;
+import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -25,15 +28,12 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
-import java.util.Date;
-import java.util.Iterator;
 import java.util.List;
 
 import uk.ac.rgu.rgtodu.data.JsonFirebaseTasksToTaskConverter;
 import uk.ac.rgu.rgtodu.data.Task;
-import uk.ac.rgu.rgtodu.data.TaskPriority;
 import uk.ac.rgu.rgtodu.data.TaskRepository;
-import uk.ac.rgu.rgtodu.data.TaskStatus;
+import uk.ac.rgu.rgtodu.data.TasksViewModel;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -44,8 +44,11 @@ public class TaskRecyclerViewFragment extends Fragment {
 
     private static final String TAG = "TaskRecyclerViewFrag";
 
+    // ViewModel for the tasks
+    private TasksViewModel mTasksViewModel;
+
     // the list of tasks being displayed
-    List<Task> mTasks;
+    LiveData<List<Task>> mTasks;
     // the RecyclerView adapter being used to display them
     RecyclerView.Adapter rvAdapter;
 
@@ -88,8 +91,22 @@ public class TaskRecyclerViewFragment extends Fragment {
             mParam1 = getArguments().getString(ARG_PARAM1);
             mParam2 = getArguments().getString(ARG_PARAM2);
         }
-        // create an empty list of data to be displayed
-        this.mTasks = new ArrayList<Task>();
+        // get a ViewModelProvider for this fragment
+        ViewModelProvider provider = new ViewModelProvider(this);
+        // now get the ViewModel for Tasks
+        this.mTasksViewModel = provider.get(TasksViewModel.class);
+
+        // now get all the tasks
+        this.mTasks = this.mTasksViewModel.getAllTasks();
+        // now observe any changes
+        this.mTasks.observe(this, new Observer<List<Task>>() {
+            @Override
+            public void onChanged(List<Task> tasks) {
+                if (rvAdapter != null){
+                    rvAdapter.notifyDataSetChanged();
+                }
+            }
+        });
 
 
     }
@@ -119,11 +136,13 @@ public class TaskRecyclerViewFragment extends Fragment {
 
         // now get the Tasks from the remote endpoint
         // donwloadAllTasks();
-        // commented out, as now we're using the local database
-        mTasks.clear();
-        List<Task> takss = TaskRepository.getRepository(getContext()).getAllTasks();
-        mTasks.addAll(takss);
-        rvAdapter.notifyDataSetChanged();
+        // above commented out, as now we're using the local database
+
+         // below commented out as using LiveData and ViewModel
+//        mTasks.clear();
+//        List<Task> tasks = TaskRepository.getRepository(getContext()).getAllTasks();
+//        mTasks.addAll(takss);
+//        rvAdapter.notifyDataSetChanged();
     }
 
     /**
@@ -138,13 +157,13 @@ public class TaskRecyclerViewFragment extends Fragment {
                     @Override
                     public void onResponse(String response) {
                         // empty the list of tasks that are currently being displayed
-                        mTasks.clear();
+                        List<Task> tasks = new ArrayList<>();
                         try {
                             JsonFirebaseTasksToTaskConverter converter = new JsonFirebaseTasksToTaskConverter();
 
                             // convert the respond to the root Json object
                             JSONObject jsonObject = new JSONObject(response);
-                            mTasks.addAll(converter.convertJsonTasks(jsonObject));
+                            tasks.addAll(converter.convertJsonTasks(jsonObject));
 
                             // update the UI
                         } catch (JSONException e) {
@@ -153,7 +172,7 @@ public class TaskRecyclerViewFragment extends Fragment {
 
                         } finally {
 
-                            Log.d(TAG, "downloaded " + mTasks.size() + " tasks");
+                            Log.d(TAG, "downloaded " + tasks.size() + " tasks");
                             Log.d(TAG, mTasks.toString());
 
                             // update the RecyclerView adapter
